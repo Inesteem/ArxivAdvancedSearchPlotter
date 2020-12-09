@@ -1,4 +1,3 @@
-Subject: Automatic arxiv.org Paper Submission Counter
 This Linux command line tool allows you to create trend curves based on the number of published papers.  The 'Advanced Search' function of the arxiv.org website is automatically triggered to evaluate the results of search terms or combinations of search terms. 
 
 Only the number of published papers per year within a given range (--startYear to --endYear) is relevant. So you can for example select which categories you want to search (e.g. --raCS for Computer Science and --raMath for Mathematics). For a more detailed description of the categories and similar filters you can consult arxiv.org itself:
