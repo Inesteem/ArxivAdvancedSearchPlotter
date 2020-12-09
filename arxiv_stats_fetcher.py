@@ -240,6 +240,8 @@ if __name__ == "__main__":
     parser.add_argument(
             "--graphColors", help="list of graph colors", required=False, nargs='+')
 
+    parser.add_argument(
+            "--searchInAbstract", help="search in abstract for key words (default: title)", required=False, action='store_true')
    
     for ra in researchAreas:
         parser.add_argument(ra.arg_str, help=ra.arg_help, required=False, action='store_true')
@@ -271,7 +273,12 @@ if __name__ == "__main__":
         if args.RA_All or ra.get_arg(args):
             query.add_research_area(ra.res_area)
 
-    needle_fields=[NeedleField.TITLE]
+    if args.searchInAbstract: 
+        needle_fields=[NeedleField.ABSTRACT]
+    else:
+        needle_fields=[NeedleField.TITLE]
+   
+
     query_needles = []
     #eval is evil; only use it if you your self define the input
     for kw in args.keyWords:

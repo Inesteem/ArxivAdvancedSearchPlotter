@@ -2,7 +2,7 @@
 
 ./arxiv_stats_fetcher.py \
     --raCS \
-    --startYear 2000 --endYear 2021 --title 'Paper containing DL or NN' \
+    --startYear 2000 --endYear 2021 --title 'Paper Abstract containing DL or NN' \
     --showGraph \
     --graphFile './example_graph.png' \
     --keyWords "[('Deep Learning','AND')]" \
@@ -11,7 +11,8 @@
                "[('Deep Learning','AND'),('Neural Network','OR')]" \
     --graphLabels "Deep Learning (DL)" "Neural Network (NN)" "NN AND DL" "NN OR DL" \
     --graphColors '#000017' '#b32428' '#b7d9b1' \
-    --plotType 'line'
+    --plotType 'line' \
+    --searchInAbstract 
 
 #    --raCS \ #research area of: Computer Science 
 #    --startYear 2000 --endYear 2021 --title 'Paper containing DL or NN' \
@@ -24,4 +25,4 @@
 #    --graphLabels "Deep Learning (DL)" "Neural Network (NN)" "NN AND DL" "NN OR DL"\ #graph names
 #    --graphColors '#000017' '#b32428' '#b7d9b1'\ #optional
 #    --plotType 'line' #either line (default) or bars
-#
+#    --searchInAbstract # default: search in title

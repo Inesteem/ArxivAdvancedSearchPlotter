@@ -1,0 +1,21 @@
+Subject: Automatic arxiv.org Paper Submission Counter
+This Linux command line tool allows you to create trend curves based on the number of published papers.  The 'Advanced Search' function of the arxiv.org website is automatically triggered to evaluate the results of search terms or combinations of search terms. 
+
+Only the number of published papers per year within a given range (--startYear to --endYear) is relevant. So you can for example select which categories you want to search (e.g. --raCS for Computer Science and --raMath for Mathematics). For a more detailed description of the categories and similar filters you can consult arxiv.org itself:
+https://arxiv.org/search/advanced
+
+Search terms can be searched in the title (default) or in the abstract (--searchInAbstract).
+
+With the --graphColors option you can pass hexcodes for the desired coloring of the graphs; otherwise default colors are used.
+
+Key words can be passed as a list with the help of --keyWords.  To search for papers containing both the key words 'Deep learning' and 'Neural Network' please pass the following input:
+--keyWords "[('Neural Network','AND'),('Deep Learning', 'AND')]".
+
+For papers that contain one or both of them:
+--keyWords "[('Neural Network','AND'),('Deep Learning', 'OR')]"
+
+The first 'AND' is always an 'AND', all further terms can be chained with 'AND' or 'OR'. Arxiv.org apparently does not have any properly defined linking rules; this tool only automates the advanced search and cannot provide any further information about the order of operators.
+
+example.sh gives an example.
+ 
+
