@@ -17,4 +17,4 @@ The first 'AND' is always an 'AND', all further terms can be chained with 'AND' 
 
 example.sh gives an example.
  
-
+WARNING: This script is not parallelized and it may take some time to fetch the desired information. After the first run, a local cache file (.query_dict) is created, accelerating every future request of the same kind.

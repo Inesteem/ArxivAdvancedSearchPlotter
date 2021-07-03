@@ -284,7 +284,7 @@ if __name__ == "__main__":
     for kw in args.keyWords:
         query_needles.append(eval(kw))
 
-    print(query_needles)
+    #print(query_needles)
     queries = []
 
     for needles in query_needles:
