@@ -111,7 +111,10 @@ class Research(object):
 
 
 
-def  plot_graph(x, ys, labels, plot_type , title):
+def  plot_graph(x, ys, args):
+    labels = args.graphLabels
+    plot_type = args.plotType
+    title = args.title
 #    f = open(filename, "r")
 #    x, y, y2 = np.loadtxt(f, unpack=True, usecols=(0, 1, 2))
 #    f.close()
@@ -121,12 +124,20 @@ def  plot_graph(x, ys, labels, plot_type , title):
     x_min = min(x)
     y_min = 0    
     y_max = np.max(ys)
-    plots = []
+
     fig, ax = plt.subplots()
-    ax.set_ylabel('Paper Submissions',fontsize=16,labelpad=10)
     ax.set_xlabel('Years',fontsize=16,labelpad=10)
     ax.set_xticks(x[::2])
     ax.set_xticklabels([int(l) for l in x[::2]], rotation=45)
+
+    if args.swapAxis:
+        ax1 = ax
+        ax=ax.twinx()
+        ax1.set_yticks([])
+        ax.set_ylabel('Paper Submissions',fontsize=16,labelpad=20, rotation=270)
+    else:
+        ax.set_ylabel('Paper Submissions',fontsize=16,labelpad=10)
+
     #ax.xlim(x_min,x_max)
     #ax.ylim(y_min,y_max)
 #    plt.title('Paper first submissions of the last 2 decades')
@@ -136,9 +147,13 @@ def  plot_graph(x, ys, labels, plot_type , title):
             p = plt.bar(x, y, align='center', label=label, color=colormap[i], zorder=i)
         else:
             p = plt.plot(x, y, marker='o', linestyle='solid',linewidth=2, markersize=2.5, color=colormap[i], label=label)
-        plots.append(p)
+
     plt.legend(loc='upper left',fontsize=13)
 
+    plt.tight_layout()
+    plt.savefig(args.graphFile)
+    if args.showGraph:
+        plt.show()
 
 class ArxivQuery(object):
 
@@ -164,8 +179,6 @@ class ArxivQuery(object):
     def add_ra_physics(self, field="all"):
         self.add_research_area(ResearchArea.PHYSICS)
         self.add_research_area(ResearchArea.PHYSICS_ARCHIVES, field)
-
-
 
     def build_url(self, filter_by, date_type):
         url = HOST + SEARCH
@@ -242,7 +255,10 @@ if __name__ == "__main__":
 
     parser.add_argument(
             "--searchInAbstract", help="search in abstract for key words (default: title)", required=False, action='store_true')
-   
+ 
+    parser.add_argument(
+            "--swapAxis", help="use y2 axis instead of y", required=False, action='store_true')
+  
     for ra in researchAreas:
         parser.add_argument(ra.arg_str, help=ra.arg_help, required=False, action='store_true')
 
@@ -327,9 +343,5 @@ if __name__ == "__main__":
     lists= np.array(lists)
 
 
-    plot_graph(years, lists, args.graphLabels, args.plotType, args.title)
+    plot_graph(years, lists, args)
 
-    plt.tight_layout()
-    plt.savefig(args.graphFile)
-    if args.showGraph:
-        plt.show()
