@@ -172,7 +172,7 @@ class ArxivQuery(object):
 
         for i, needle in enumerate(self.needles):
            url += "&terms-%d-operator=%s"   % (i, needle.op)
-           url += "&terms-%d-term=%s"       % (i, needle.msg)
+           url += "&terms-%d-term=%s"       % (i, "\""+needle.msg+"\"")
            url += "&terms-%d-field=%s"      % (i, needle.field) 
         
         for research in self.research:
