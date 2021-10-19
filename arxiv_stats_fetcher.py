@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup #dependency: pip3 install BeautifulSoup4
 from urllib.request import urlopen
 import re
 import sys
+import os.path
 
 import argparse  #dependeny pip3 install matplotlib
 import copy
@@ -22,7 +23,6 @@ import numpy as np
 import pickle
 HOST="https://arxiv.org/"
 SEARCH="search/advanced?advanced="
-
 
 colormap = [
     '#4477AA', #0
@@ -275,11 +275,12 @@ if __name__ == "__main__":
 
    # cache query results
     dict_file = ".query_dict"
-    try:
-        query_dict = pickle.load(open(dict_file, "rb"))
-    except Exception as e:
-        query_dict = {}
-        print(e)
+    query_dict = {}
+    if os.path.exists(dict_file):
+        try:
+            query_dict = pickle.load(open(dict_file, "rb"))
+        except Exception as e:
+            print(e)
 
     # build query object
     query = ArxivQuery()
@@ -319,7 +320,7 @@ if __name__ == "__main__":
             url = query.build_url(Filter.SPECIFIC_YEAR, DateType.SUBMITTED_DATE_FIRST)
             print(url)
             url_hash=hashlib.md5(url.encode('utf-8')).hexdigest()
-            if url_hash not in query_dict:
+            if url_hash not in query_dict or query_dict[url_hash] == -1:
                 with urlopen(url) as response:
                     soup = BeautifulSoup(response, 'html.parser')
                     search_result = soup.h1.get_text()

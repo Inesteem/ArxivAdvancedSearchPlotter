@@ -34,8 +34,6 @@
     --graphLabels "TPU" \
     --plotType 'bars' 
 
-exit 0
-
 ./arxiv_stats_fetcher.py \
     --raCS \
     --startYear 2000 --endYear 2022 --title 'Paper Title refering to DL/NN + Resource Estimation' \
@@ -75,8 +73,6 @@ exit 0
     --graphLabels "Latency" "Time" "Power" "Energy" "Memory"\
     --graphColors '#a6cee3' '#386cb0' '#e41a1c' '#fe9929' '#1b9e77' \
     --plotType 'line' 
-
-exit 0
 
 ./arxiv_stats_fetcher.py \
     --raCS \
@@ -200,3 +196,62 @@ exit 0
         ]" \
     --graphLabels "Cloud" "Edge" "Fog" \
     --plotType 'line'
+
+
+./arxiv_stats_fetcher.py \
+    --raCS \
+    --startYear 2010 --endYear 2022 \
+    --title '' \
+    --showGraph \
+    --graphFile './example_graph8.pdf' \
+    --keyWords \
+        "[\
+        ('real-time','AND'),('deep learning','AND'), \
+        ('real-time','OR'),('neural network','AND'), \
+        ('real time','OR'), ('deep learning','AND'), \
+        ('real time','OR'),('neural network','AND') \
+        ]" \
+        "[\
+        ('real-time','AND'),('embedded','AND'), \
+        ('real time','OR'),('embedded','AND'), \
+        ('real-time','OR'),('mobile','AND'), \
+        ('real time','OR'),('mobile','AND'), \
+        ('real-time','OR'),('edge','AND'), \
+        ('real time','OR'),('edge','AND'), \
+        ]" \
+        "[\
+        ('real-time','AND'),('deep learning','AND'),('embedded','AND'), \
+        ('real-time','OR'),('neural network','AND'),('embedded','AND'), \
+        ('real time','OR'),('deep learning','AND'), ('embedded','AND'), \
+        ('real time','OR'),('neural network','AND'),('embedded','AND'),\
+        ('real-time','OR'),('deep learning','AND'), ('mobile','AND'), \
+        ('real-time','OR'),('neural network','AND'),('mobile','AND'), \
+        ('real time','OR'),('deep learning','AND'), ('mobile','AND'), \
+        ('real time','OR'),('neural network','AND'),('mobile','AND'), \
+        ('real-time','OR'),('deep learning','AND'), ('edge','AND'), \
+        ('real-time','OR'),('neural network','AND'),('edge','AND'), \
+        ('real time','OR'),('deep learning','AND'), ('edge','AND'),  \
+        ('real time','OR'),('neural network','AND'),('edge','AND'), \
+]" \
+    --graphLabels "RT+DL" "Embedded RT"  "Embedded RT+DL"\
+    --plotType 'line' \
+    --swapAxis
+
+
+./arxiv_stats_fetcher.py \
+    --raCS \
+    --startYear 2000 --endYear 2022 --title 'Paper Abstract containing Real Time + DL' \
+    --showGraph \
+    --graphFile './example_graph9.pdf' \
+    --keyWords \
+        "[\
+        ('real-time', 'AND'),('deep learning','AND'),('real-time',  'OR'),('neural network','AND'), \
+        ('real time', 'OR'),('deep learning','AND'),('real time',  'OR'),('neural network','AND')\
+        ]" \
+        "[\
+        ('real-time', 'AND'),('deep learning','AND'),('embedded','AND'), ('real-time',  'OR'),('neural network','AND'),('embedded','AND'), \
+        ('real time', 'OR'),('deep learning','AND'), ('embedded','AND'), ('real time',  'OR'),('neural network','AND'), ('embedded','AND'),\
+]" \
+    --graphLabels "RT" "Embedded RT" \
+    --searchInAbstract \
+    --plotType 'bars'
