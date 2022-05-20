@@ -24,6 +24,29 @@ import pickle
 HOST="https://arxiv.org/"
 SEARCH="search/advanced?advanced="
 
+def setDefaultStyle():
+    print([x for x in plt.rcParams.keys() if 'size' in x])
+#    sys.exit(1)
+
+    plt.rcParams['figure.titleweight'] = 'bold'
+    plt.rcParams['figure.figsize'] = figuresize[0]
+    plt.rcParams['lines.linewidth'] = 1
+
+    plt.rcParams['axes.titleweight'] = 'bold'
+    plt.rcParams['axes.titlesize'] = '17'
+
+
+    plt.rcParams['axes.labelweight'] = 'bold'
+    plt.rcParams['axes.labelsize'] = '17'
+
+    plt.rcParams['font.weight'] = 'bold'
+    plt.rcParams['font.size'] = '16'
+
+    plt.rcParams['axes.labelweight'] = 'bold'
+    plt.rcParams['xtick.labelsize'] = '13'
+    plt.rcParams['ytick.labelsize'] = '13'
+
+
 colormap = [
     '#4477AA', #0
     '#99CCEE', #1
@@ -35,28 +58,18 @@ colormap = [
     ]
 
 figuresize = (
-    (10.0, 2.6),
+    (10.0, 7),
+    (10.0, 3),
     (10.0, 4.0),
     (5.0, 3.0),
 )
 
-def setDefaultStyle():
+def setBoldStyle():
     plt.rcParams['figure.titleweight'] = 'bold'
-    plt.rcParams['figure.figsize'] = figuresize[0]
-    plt.rcParams['lines.linewidth'] = 1
-
     plt.rcParams['axes.titleweight'] = 'bold'
-    plt.rcParams['axes.titlesize'] = 'medium'
-
-    plt.rcParams['font.weight'] = 'bold'
-
     plt.rcParams['axes.labelweight'] = 'bold'
-    plt.rcParams['xtick.labelsize'] = 'smaller'
-    plt.rcParams['ytick.labelsize'] = 'smaller'
-
-    # See available rcParams
-    # plt.rcParams.keys
-
+    plt.rcParams['font.weight'] = 'bold'
+    plt.rcParams['axes.labelweight'] = 'bold'
 
 class DateType(IntEnum):
     SUBMITTED_DATE=0
@@ -113,6 +126,8 @@ class Research(object):
 
 def  plot_graph(x, ys, args):
     labels = args.graphLabels
+    if args.noLegend:
+        labels = [""] * len(ys)
     plot_type = args.plotType
     title = args.title
 #    f = open(filename, "r")
@@ -126,29 +141,31 @@ def  plot_graph(x, ys, args):
     y_max = np.max(ys)
 
     fig, ax = plt.subplots()
+    if args.addYGrid:
+       plt.grid(axis = 'y') 
     ax.set_xlabel('Years',fontsize=16,labelpad=10)
-    ax.set_xticks(x[::2])
-    ax.set_xticklabels([int(l) for l in x[::2]], rotation=45)
+    ax.set_xticks(x[::args.skipLabel])
+    ax.set_xticklabels([int(l) for l in x[::args.skipLabel]], rotation=45, fontsize=14)
 
     if args.swapAxis:
         ax1 = ax
         ax=ax.twinx()
         ax1.set_yticks([])
-        ax.set_ylabel('Paper Submissions',fontsize=16,labelpad=20, rotation=270)
+        ax.set_ylabel('Paper Submissions', fontsize=16,labelpad=20, rotation=270)
     else:
-        ax.set_ylabel('Paper Submissions',fontsize=16,labelpad=10)
+        ax.set_ylabel('Paper Submissions', fontsize=16,labelpad=10, weight='bold')
 
+    setBoldStyle()
     #ax.xlim(x_min,x_max)
     #ax.ylim(y_min,y_max)
-#    plt.title('Paper first submissions of the last 2 decades')
     plt.title(title)
     for i,(y,label) in enumerate(zip(ys,labels)):
         if plot_type=='bars':
             p = plt.bar(x, y, align='center', label=label, color=colormap[i], zorder=i)
         else:
             p = plt.plot(x, y, marker='o', linestyle='solid',linewidth=2, markersize=2.5, color=colormap[i], label=label)
-
-    plt.legend(loc='upper left',fontsize=13)
+    if not args.noLegend:
+        plt.legend(loc='upper left', fontsize=13)
 
     plt.tight_layout()
     plt.savefig(args.graphFile)
@@ -233,6 +250,8 @@ researchAreas = [
 
 
 if __name__ == "__main__":
+    setDefaultStyle()
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
           '--startYear', help='start year (incl)', type=int, default=1991)
@@ -249,7 +268,7 @@ if __name__ == "__main__":
     parser.add_argument(
           "--keyWords", help="list of keyword,con pairings for each graph; format: [('word1_graph1','con11'),..('wordm_graph1','con1m')] ... [('word1_graphn','conn1'),..('wordk_graphn','connk')], where con='OR' or 'AND' and word is the keyword you search for", required=True , nargs='+')
     parser.add_argument(
-          "--graphLabels", help="graph labels; format: 'label1' 'label2' ... 'labeln'", required=True, nargs='+')
+          "--graphLabels", help="graph labels; format: 'label1' 'label2' ... 'labeln'",default=[], nargs='+')
     parser.add_argument(
             "--graphColors", help="list of graph colors", required=False, nargs='+')
 
@@ -259,12 +278,22 @@ if __name__ == "__main__":
     parser.add_argument(
             "--swapAxis", help="use y2 axis instead of y", required=False, action='store_true')
   
+    parser.add_argument(
+            "--addYGrid", help="add light helper grid", required=False, action='store_true')
+    
+    parser.add_argument(
+            "--noLegend", help="plot no legend", required=False, action='store_true')
+    
+    parser.add_argument(
+            "--skipLabel", help="skip every nth label",default=2, type=int)
+
     for ra in researchAreas:
         parser.add_argument(ra.arg_str, help=ra.arg_help, required=False, action='store_true')
 
     args = parser.parse_args()
    
-    assert(len(args.graphLabels) == len(args.keyWords));
+    if not args.noLegend:
+        assert(len(args.graphLabels) == len(args.keyWords));
 
     
     # set colors ( if available )
@@ -320,7 +349,7 @@ if __name__ == "__main__":
             url = query.build_url(Filter.SPECIFIC_YEAR, DateType.SUBMITTED_DATE_FIRST)
             print(url)
             url_hash=hashlib.md5(url.encode('utf-8')).hexdigest()
-            if url_hash not in query_dict or query_dict[url_hash] == -1:
+            if url_hash not in query_dict or query_dict[url_hash] < 0:
                 with urlopen(url) as response:
                     soup = BeautifulSoup(response, 'html.parser')
                     search_result = soup.h1.get_text()
